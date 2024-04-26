@@ -1,0 +1,76 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: db
+spec:
+  selector:
+    app: hotel-management-system-db
+  ports:
+    - protocol: TCP
+      port: 5432
+      targetPort: 5432
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: jar-service
+spec:
+  selector:
+    app: hotel-management-system-jar
+  ports:
+    - protocol: TCP
+      port: 9090
+      targetPort: 8089
+      NodePort: 30000
+  type: NodePort  
+
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: db
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: hotel-management-system-db
+  template:
+    metadata:
+      labels:
+        app: hotel-management-system-db
+    spec:
+      containers:
+        - name: db
+          image: squad02/hotel-management-system-db:latest
+          ports:
+            - containerPort: 5432
+          env:
+            - name: POSTGRES_DB
+              value: "hotel" 
+            - name: POSTGRES_USER
+              value: "postgres" 
+            - name: POSTGRES_PASSWORD
+              value: "12345"  
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: jar
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: hotel-management-system-jar
+  template:
+    metadata:
+      labels:
+        app: hotel-management-system-jar
+    spec:
+      containers:
+        - name: jar
+          image: squad02/hotel-management-system-jar:latest
+          ports:
+            - containerPort: 8089
