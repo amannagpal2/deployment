@@ -22,7 +22,7 @@ spec:
     - protocol: TCP
       port: 9090
       targetPort: 8089
-      NodePort: 30000
+      nodePort: 30000
   type: NodePort  
 
 
