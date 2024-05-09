@@ -60,7 +60,7 @@ kind: Deployment
 metadata:
   name: jar
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: hotel-management-system-jar
