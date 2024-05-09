@@ -6,9 +6,9 @@ metdata:
 spec:
   project: default
   source:
-    repoURL: 
+    repoURL: https://github.com/amannagpal2/deployment.git
     targetRevision: HEAD
-    path:
+    path: deploy
   destination:
     server: https://kubernetes.default.svc
     namespace: aman-n5
