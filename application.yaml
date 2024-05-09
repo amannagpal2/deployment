@@ -1,0 +1,23 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metdata:
+  name: myapp-argo
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: 
+    targetRevision: HEAD
+    path:
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: aman-n5
+
+  syncPolicy:
+    syncOptions:
+    - CreateNamespace=true
+
+  automated:
+     selfHeal: true
+     prune: true
+     
