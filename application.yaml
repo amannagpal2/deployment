@@ -1,15 +1,16 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
-metdata:
-  name: myapp-argo
+metadata:
+  name: myapp-argo-application
   namespace: argocd
 spec:
   project: default
+
   source:
     repoURL: https://github.com/amannagpal2/deployment.git
     targetRevision: HEAD
     path: deploy
-  destination:
+  destination: 
     server: https://kubernetes.default.svc
     namespace: aman-n5
 
@@ -17,7 +18,6 @@ spec:
     syncOptions:
     - CreateNamespace=true
 
-  automated:
-     selfHeal: true
-     prune: true
-     
+    automated:
+      selfHeal: true
+      prune: true
