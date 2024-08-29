@@ -1,3 +1,9 @@
+---
+Title: How to restrict rds access with iam
+layout: docs
+---
+
+
 == Overview
 
 
@@ -10,7 +16,7 @@ AWS IAM RDS authentication addresses the challenges due to password reusability 
 
 
 == Procedure:
-Restricting access to RDS instance to limited users and log in using only temporary access token into the instance. User can only connect to RDS not any other action. 
+Restricting access to RDS instance to limited users and log in using only temporary access token into the instance. User is only allowed to connect to DB instance & not to perform any other action. 
 
 **Steps to follow:** 
 
@@ -24,4 +30,53 @@ For PostgreSQL: +
 CREATE USER <db_username>;
 GRANT rds_iam TO <db_username>; 
 
-Create an IAM user and attach an IAM policy that maps the database user to the IAM user.
+* Create an IAM user and attach an IAM policy that maps the database user to the IAM user.
+** Create an IAM user and attach the policy generated. This will grant permission to user to connect to database via auth token.
+[source]
+{
+    "Statement": [
+        {
+            "Action": [
+                "rds-db:connect"
+            ],
+            "Effect": "Allow",
+            "Resource": [
+                "arn:aws:rds-db:<region>:<account-id>:dbuser:<DbiResourceId>/<db-username>"
+            ],
+            "Sid": "AllowFullAccess"
+        }
+    ],
+    "Version": "2012-10-17"
+}
+
+* Generate an IAM Database Authentication Token +    
+This token is a JSON Web Token (JWT) that contains the authentication information for the IAM user. To create an IAM database authentication token, follow these steps:
+
+** Install AWS CLI
+** Configure Profile: +
+Configure the user in the CLI,having permission to connect to RDS instance.
+[source]
+export PROFILE_NAME="console_rds_user"
+aws configure --profile $PROFILE_NAME
+awsume $PROFILE_NAME
+** Configure Variables:
+[source]
+export REGION="<YOUR-REGION>"
+export RDSHOST="<RDS-ENDPOINT>"
+export PG_USER="<DB-USERNAME>"
+export PORT=<PORT>
+export DB_NAME="<DB-NAME>"
+
+** Generate Token:
+[source]
+export PGPASSWORD="$(aws rds generate-db-auth-token --hostname $RDSHOST --port $PORT --region $REGION --username $PG_USER)"
+
+* Connect to the RDS PostgreSQL Instance using token
+[source]
+psql "host=$RDSHOST port=$PORT dbname=$DB_NAME user=$PG_USER password=$PGPASSWORD sslmode=require"
+
+
+
+
+
+
