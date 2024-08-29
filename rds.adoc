@@ -12,16 +12,16 @@ AWS IAM RDS authentication addresses the challenges due to password reusability 
 == Procedure:
 Restricting access to RDS instance to limited users and log in using only temporary access token into the instance. User can only connect to RDS not any other action. 
 
-**Steps to follow:** +
-1. Create a RDS instance and enable the password and IAM Authentication on the RDS DB instance.
+**Steps to follow:** 
+
+* Create a RDS instance and enable the password and IAM Authentication on the RDS DB instance.
 (Database authentication > Password and IAM database authentication) +
-
-2.Create a database user to use IAM authentication with the database +
-
-* Create a new user and grant it `rds_iam` role so that it should only login via RDS auth token. To create this user, use master credentials to login into the database and then create a new user. +
+* Create a database user to use IAM authentication with the database +
+** Create a new user and grant it `rds_iam` role so that it should only login via RDS auth token. To create this user, use master credentials to login into the database and then create a new user. +
 For PostgreSQL: +
 `psql -h {database or cluster endpoint} -U {Master username} -d {dbname} -p {port}` +
-```
+[source]
 CREATE USER <db_username>;
-GRANT rds_iam TO <db_username>;
-```
+GRANT rds_iam TO <db_username>; 
+
+Create an IAM user and attach an IAM policy that maps the database user to the IAM user.
