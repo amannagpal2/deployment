@@ -81,6 +81,12 @@ psql "host=$RDSHOST port=$PORT dbname=$DB_NAME user=$PG_USER password=$PGPASSWOR
 * IAM policies are defined for the RDS level access like connection to rds, restricting user from deleting the DB instance, stopping instance, modifying RDS instance etc.
 * To restrict user from any database related activity like restriction on deletion of schema or tables etc., then we need to assign that permissions to user on database level because IAM policies cannot control these database related permissions.
 
+== **For more details:** 
+
+https://medium.com/@tizattogabriel/how-to-authenticate-to-an-aws-rds-postgresql-db-instance-using-iam-credentials-4e69b095c01c[Restrict RDS Access]
+
+https://docs.aws.amazon.com/service-authorization/latest/reference/list_amazonrdsiamauthentication.html[IAM Policy for RDS Auth]
+
 
 
 
