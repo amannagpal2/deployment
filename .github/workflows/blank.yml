@@ -1,11 +1,6 @@
 on:
   workflow_dispatch:
-  push:
-    branches:
-    - trial1
-  pull_request:
-    branches:
-    - main
+
     
 
 jobs:
