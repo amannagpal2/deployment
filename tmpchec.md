@@ -58,27 +58,36 @@ Creating self-signed cert for signing images
 - Generating Certificate singing request(CSR) for Certificate creation:
   - openssl req -new -key cert-key.pem  -out image-sign.csr -subj "/C=IND/ST=BLR/O=Bosch/CN=*.mobility-commonframeworks.bosch.tech"
 - Generating Certificate:
-  - cat >> openssl_config.cnf <<EOF
+    ```yaml
+    cat >> openssl_config.cnf <<EOF
     [ v3_req ]
     basicConstraints = critical,CA:FALSE
     keyUsage = critical,digitalSignature
     extendedKeyUsage = codeSigning
     authorityKeyIdentifier = keyid:always
     EOF
+    ```
   - openssl x509 -req -days 365 -in image-sign.csr -signkey cert-key.pem -extensions v3_req -extfile openssl_config.cnf -out cert.pem
+
 
 **Notation CLI:**
 
-  - Download, extract and install Notation CLI
-    ```yaml
-        curl -Lo notation.tar.gz https://github.com/notaryproject/notation/releases/download/v1.3.2/notation_1.3.2_linux_amd64.tar.gz
-        tar xvzf notation.tar.gz
-        # Copy the Notation binary to the desired bin directory in your $PATH, for example
-        cp ./notation /usr/local/bin
-    ```
-  - Install & verify the Notation Azure Key Vault plugin on linux
-    ```yaml
-    notation plugin install --url https://github.com/Azure/notation-azure-kv/releases/download/v1.2.1/notation-azure-kv_1.2.1_linux_amd64.tar.gz --sha256sum 67c5ccaaf28dd44d2b6572684d84e344a02c2258af1d65ead3910b3156d3eaf5
-    notation plugin ls
-    ```
-    -    
+- Download, extract and install Notation CLI
+  ```yaml
+  curl -Lo notation.tar.gz https://github.com/notaryproject/notation/releases/download/v1.3.2/notation_1.3.2_linux_amd64.tar.gz
+  tar xvzf notation.tar.gz
+  # Copy the Notation binary to the desired bin directory in your $PATH, for example
+  cp ./notation /usr/local/bin
+  ```
+- Install & verify the Notation Azure Key Vault plugin on linux
+  ```yaml
+  notation plugin install --url https://github.com/Azure/notation-azure-kv/releases/download/v1.2.1/notation-azure-kv_1.2.1_linux_amd64.tar.gz --sha256sum 67c5ccaaf28dd44d2b6572684d84e344a02c2258af1d65ead3910b3156d3eaf5
+  notation plugin ls
+  ```
+ - Secure access permissions to ACR and AKV
+   - ACR user should have AcrPull and AcrPush roles enabled.
+   - For AKV, following permissions are required for an identity:
+     - Create permissions for creating a certificate
+     - Get permissions for reading existing certificates
+     - Sign permissions for signing operations
+          
