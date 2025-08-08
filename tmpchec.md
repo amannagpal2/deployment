@@ -70,10 +70,12 @@ Creating self-signed cert for signing images
 **Notation CLI:**
 
   - Download, extract and install Notation CLI
+    ```yaml
       curl -Lo notation.tar.gz https://github.com/notaryproject/notation/releases/download/v1.3.2/notation_1.3.2_linux_amd64.tar.gz
       tar xvzf notation.tar.gz
       # Copy the Notation binary to the desired bin directory in your $PATH, for example
       cp ./notation /usr/local/bin
+    ```
   - Install & verify the Notation Azure Key Vault plugin on linux
       notation plugin install --url https://github.com/Azure/notation-azure-kv/releases/download/v1.2.1/notation-azure-kv_1.2.1_linux_amd64.tar.gz --sha256sum 67c5ccaaf28dd44d2b6572684d84e344a02c2258af1d65ead3910b3156d3eaf5
       notation plugin ls
