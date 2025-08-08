@@ -122,11 +122,11 @@ Sign using Self-Signed/Trusted CA Cert
    ```
    For Trusted CA: 
    When creating certificates for signing and verification, the certificates must meet the ([Notary Project certificate requirement](https://github.com/notaryproject/specifications/blob/v1.0.0/specs/signature-specification.md#certificate-requirements))
-   - If the certificate contains the entire certificate chain, run the following command:
-     ```
-     notation sign --signature-format cose $IMAGE --id $KEY_ID --plugin azure-kv
-     ```
-   - If the certificate does not contain the chain, use the --plugin-config ca_certs=<ca_bundle_file> parameter to pass the CA certificates in a PEM file to AKV plugin, run the following command:  
-     ```
-     notation sign --signature-format cose $IMAGE --id $KEY_ID --plugin azure-kv --plugin-config ca_certs=<ca_bundle_file>
-     ```
+   If the certificate contains the entire certificate chain, run the following command:
+   ```
+   notation sign --signature-format cose $IMAGE --id $KEY_ID --plugin azure-kv
+   ```
+   If the certificate does not contain the chain, use the --plugin-config ca_certs=<ca_bundle_file> parameter to pass the CA certificates in a PEM file to AKV plugin, run the following command:  
+   ```
+   notation sign --signature-format cose $IMAGE --id $KEY_ID --plugin azure-kv --plugin-config ca_certs=<ca_bundle_file>
+   ```
