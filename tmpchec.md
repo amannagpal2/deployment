@@ -37,7 +37,7 @@ Container Image signing for security and authenticity, so that the end user know
 
 ## 4. Evaluated Approaches
 
-### 4.1 Option 1 :  *Notation CLI + Self-signed Cert*
+### 4.1 Option 1 :  *Notation CLI + Self-signed/Trusted CA Cert*
 
 Image signing via Notation cli with Certs ([Reference link](https://learn.microsoft.com/en-us/azure/container-registry/container-registry-tutorial-sign-build-push))
 
@@ -54,6 +54,7 @@ Key Features:
 **Self-Signed Cert Creation:**
 
 Creating self-signed cert for signing images
+
 - Generating Private key RSA type:
   - openssl genrsa -out cert-key.pem 2048
 - Generating Certificate singing request(CSR) for Certificate creation:
@@ -69,7 +70,7 @@ Creating self-signed cert for signing images
     EOF
     ```
   - openssl x509 -req -days 365 -in image-sign.csr -signkey cert-key.pem -extensions v3_req -extfile openssl_config.cnf -out cert.pem
-
+  - Adding the key and certificate to Azure Key-vault for security and ease of using (Add priavte key and cert in a single pem file and upload it to AKV).
 
 **Notation CLI:**
 
@@ -91,5 +92,15 @@ Creating self-signed cert for signing images
   
       `Create` permissions for creating a certificate
       `Get` permissions for reading existing certificates
-      Sign permissions for signing operations
-          
+      `Sign` permissions for signing operations
+
+#### 4.1.2 Signing Image using Notation CLI
+
+Sign using Self-Signed Cert
+
+1. Login into ACR
+2. Image to sign (It is better to use the digest value to identify the image for signing since tags are mutable and can be overwritten)
+   ```
+   IMAGE=<REGISTRY-NAME>/<REPO-NAME>:<TAG>
+   IMAGE=<REGISTRY-NAME>/<REPO-NAME>@<DIGEST>
+   ```
