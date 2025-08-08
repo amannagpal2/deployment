@@ -68,7 +68,7 @@ Domain Validated (DV): This is the lowest level of validation. The CA only verif
 - DigiCert-OV (Code Signing cert):
     
     Code Signing - HSM
-    Use your own hardware security module (HSM)
+    Use your own hardware security module (HSM)  
     $600.00/year subscription
 
 - DigiCert-EV (Code Signing cert)
