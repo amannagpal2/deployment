@@ -66,11 +66,13 @@ Domain Validated (DV): This is the lowest level of validation. The CA only verif
 - Organization Validation(OV) and Extended Validation(EV) Offered by DigiCert is a good option for us as it verifies organization identity.
 
 - DigiCert-OV (Code Signing cert):
+    
     Code Signing - HSM
     Use your own hardware security module (HSM)
     $600.00/year subscription
 
 - DigiCert-EV (Code Signing cert)
+  
     Code Signing - HSM
     Use your own hardware security module (HSM)
     $840.00/year subscription
