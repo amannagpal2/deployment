@@ -61,10 +61,19 @@ Recommendation by Security Team
 4. Google Trust Services (DV only)
 5. DigiCert (DV, OV, EV)
 
-Note: Domain Validated (DV): This is the lowest level of validation. The CA only verifies that the requestor has control over the domain name. This is usually done through email verification, DNS records, or file upload. DV certificates are quick and cheap to obtain, but they don't provide any organizational identity.
+Domain Validated (DV): This is the lowest level of validation. The CA only verifies that the requestor has control over the domain name. This is usually done through email verification, DNS records, or file upload. DV certificates are quick and cheap to obtain, but they don't provide any organizational identity.
 
-- 
+- Organization Validation(OV) and Extended Validation(EV) Offered by DigiCert is a good option for us as it verifies organization identity.
 
+DigiCert-OV (Code Signing cert):
+- Code Signing - HSM
+   Use your own hardware security module (HSM)
+   $600.00/year subscription
+
+DigiCert-EV (Code Signing cert)
+- Code Signing - HSM
+   Use your own hardware security module (HSM)
+   $840.00/year subscription
 
 **Self-Signed Cert Creation:**
 
