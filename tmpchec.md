@@ -89,7 +89,7 @@ Creating self-signed cert for signing images
    - ACR user should have AcrPull and AcrPush roles enabled.
    - For AKV, following permissions are required for an identity:
   
-      'Create' permissions for creating a certificate
-      'Get' permissions for reading existing certificates
+      `Create` permissions for creating a certificate
+      `Get` permissions for reading existing certificates
       Sign permissions for signing operations
           
