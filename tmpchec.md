@@ -51,6 +51,21 @@ Key Features:
   
 #### 4.1.1 Installation and Setup
 
+**DigiCert for Signing:**
+
+Recommendation by Security Team
+
+1. Let’s Encrypt (DV only))
+2. Amazon Web Services (AWS) Certificate Manager (ACM) (not ACM Private CA) (DV only))
+3. Microsoft Azure integrated App Service Certificates provided by Starfield Technologies, LLC on top of GoDaddy (DV only))
+4. Google Trust Services (DV only)
+5. DigiCert (DV, OV, EV)
+
+Note: Domain Validated (DV): This is the lowest level of validation. The CA only verifies that the requestor has control over the domain name. This is usually done through email verification, DNS records, or file upload. DV certificates are quick and cheap to obtain, but they don't provide any organizational identity.
+
+- 
+
+
 **Self-Signed Cert Creation:**
 
 Creating self-signed cert for signing images
@@ -132,3 +147,67 @@ Sign using Self-Signed/Trusted CA Cert
    ```
    notation sign --signature-format cose $IMAGE --id $KEY_ID --plugin azure-kv --plugin-config ca_certs=<ca_bundle_file>
    ```
+
+#### 4.1.3 Verify a container image with Notation CLI
+
+1. Download public certificate.
+   ```
+   az keyvault certificate download --name <CERT_NAME> --vault-name <AKV_NAME> --file sign-cert.pem/<cert-path>
+   ```
+2. Add the downloaded public certificate to named trust store for signature verification.
+   ```
+   STORE_TYPE="ca"
+   STORE_NAME="xyz"
+   notation cert add --type $STORE_TYPE --store $STORE_NAME $CERT_PATH
+   ``` 
+3. Configure trust policy before verification:
+
+    Trust policies allow users to specify fine-tuned verification policies. 
+    ```json
+    cat <<EOF > ./trustpolicy.json
+    {
+        "version": "1.0",
+        "trustPolicies": [
+            {
+                "name": "<policy-name>",
+                "registryScopes": [ "<REGISTRY-NAME>/<REPO-NAME>" ],
+                "signatureVerification": {
+                    "level" : "strict" 
+                },
+                "trustStores": [ "$STORE_TYPE:$STORE_NAME" ],
+                "trustedIdentities": [
+                    "x509.subject: <subject-of-the-cert>/"
+                ]
+            }
+        ]
+    }
+    EOF
+    ```
+4. Use notation policy to import the trust policy configuration from a JSON file that we created previously.
+   ```
+   notation policy import ./trustpolicy.json
+   notation policy show
+   ```
+5. Use notation verify to verify the container image hasn't been altered since build time.
+   '''
+   notation verify $IMAGE
+   '''
+
+#### 4.1.4 Pros and Cons
+
+**Pros**
+
+- Standardized & secure cryptographic technique
+- Easy integration for container registries(docker hub, ACR, AWS ECR)
+- Flexibility in certificate management(AWS KMS, Azure Kv)
+-  Azure supported Plugins for verification in AKS while deployment
+
+**Cons**
+
+- Learning curve, requires understanding of cryptographic keys, certs and OCi artifacts
+- Feature maturity, as it is new tool and still evolving so no all features of integrations are fully stable
+  
+
+
+**Risks**
+- No warning on docker pull if root certs are not present
