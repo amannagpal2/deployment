@@ -96,11 +96,25 @@ Creating self-signed cert for signing images
 
 #### 4.1.2 Signing Image using Notation CLI
 
-Sign using Self-Signed Cert
+Sign using Self-Signed/Trusted CA Cert
 
-1. Login into ACR
-2. Image to sign (It is better to use the digest value to identify the image for signing since tags are mutable and can be overwritten)
+1. Authenticate to ACR
+    ``` az acr login --name <ACR_NAME> ```
+2. Image to sign (It is better to use the digest value to identify the image for signing since tags are mutable and can be overwritten).
    ```
    IMAGE=<REGISTRY-NAME>/<REPO-NAME>:<TAG>
    IMAGE=<REGISTRY-NAME>/<REPO-NAME>@<DIGEST>
    ```
+3. Get the Key ID of the signing key (we added the cert in AKV with pvt key).
+    ```
+    KEY_ID=$(az keyvault certificate show -n <CERT_NAME> --vault-name <AKV_NAME> --query 'kid' -o tsv)
+    ```
+4. For Self-Signed
+   
+   Sign the container image with the COSE signature format using the signing key ID. To sign with a self-signed certificate, you need to set the plugin configuration value
+   self_signed=true.
+   ```
+   notation sign --signature-format cose --id $KEY_ID --plugin azure-kv --plugin-config self_signed=true $IMAGE
+   ```
+   For Trusted CA: 
+   When creating certificates for signing and verification, the certificates must meet the ([Notary Project certificate requirement](https://github.com/notaryproject/specifications/blob/v1.0.0/specs/signature-specification.md#certificate-requirements))
