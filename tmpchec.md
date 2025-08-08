@@ -13,8 +13,7 @@ Technology/Tools to be used for implementing container signing, which needs to b
 
 Container Image signing for security and authenticity, so that the end user knows it is using the actual image **what it says.**
 
- - Solution must ensure container images used are signed by the creator for integrity and trustworthiness of container images.
- - Solution must ensure the images should be signed and verified using self-signed or trusted CA certificates.
+ - Solution must ensure container images used are signed by the creator for integrity and trustworthiness of container images./n - Solution must ensure the images should be signed and verified using self-signed or trusted CA certificates.
  - Solution must provide verification of the signatures of images while deployment in AKS.
 
 **Goal:**
