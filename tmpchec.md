@@ -120,8 +120,9 @@ Sign using Self-Signed/Trusted CA Cert
    ```
    notation sign --signature-format cose --id $KEY_ID --plugin azure-kv --plugin-config self_signed=true $IMAGE
    ```
-   For Trusted CA: 
+   For Trusted CA:
    When creating certificates for signing and verification, the certificates must meet the ([Notary Project certificate requirement](https://github.com/notaryproject/specifications/blob/v1.0.0/specs/signature-specification.md#certificate-requirements))
+   
    If the certificate contains the entire certificate chain, run the following command:
    ```
    notation sign --signature-format cose $IMAGE --id $KEY_ID --plugin azure-kv
