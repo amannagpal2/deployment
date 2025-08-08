@@ -70,7 +70,7 @@ Creating self-signed cert for signing images
     EOF
     ```
   - openssl x509 -req -days 365 -in image-sign.csr -signkey cert-key.pem -extensions v3_req -extfile openssl_config.cnf -out cert.pem
-  - Adding the key and certificate to Azure Key-vault for security and ease of using (Add priavte key and cert in a single pem file and upload it to AKV).
+  - Add the key and certificate to Azure Key-vault for security and ease of using (Add priavte key and cert in a single pem file and upload it to AKV).
 
 **Notation CLI:**
 
@@ -91,7 +91,9 @@ Creating self-signed cert for signing images
    - For AKV, following permissions are required for an identity:
   
       `Create` permissions for creating a certificate
+
       `Get` permissions for reading existing certificates
+
       `Sign` permissions for signing operations
 
 #### 4.1.2 Signing Image using Notation CLI
@@ -99,7 +101,9 @@ Creating self-signed cert for signing images
 Sign using Self-Signed/Trusted CA Cert
 
 1. Authenticate to ACR
-    ``` az acr login --name <ACR_NAME> ```
+    ``` 
+    az acr login --name <ACR_NAME> 
+    ```
 2. Image to sign (It is better to use the digest value to identify the image for signing since tags are mutable and can be overwritten).
    ```
    IMAGE=<REGISTRY-NAME>/<REPO-NAME>:<TAG>
@@ -118,3 +122,11 @@ Sign using Self-Signed/Trusted CA Cert
    ```
    For Trusted CA: 
    When creating certificates for signing and verification, the certificates must meet the ([Notary Project certificate requirement](https://github.com/notaryproject/specifications/blob/v1.0.0/specs/signature-specification.md#certificate-requirements))
+   - If the certificate contains the entire certificate chain, run the following command:
+     ```
+     notation sign --signature-format cose $IMAGE --id $KEY_ID --plugin azure-kv
+     ```
+   - If the certificate does not contain the chain, use the --plugin-config ca_certs=<ca_bundle_file> parameter to pass the CA certificates in a PEM file to AKV plugin, run the following command:  
+     ```
+     notation sign --signature-format cose $IMAGE --id $KEY_ID --plugin azure-kv --plugin-config ca_certs=<ca_bundle_file>
+     ```
