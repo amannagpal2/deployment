@@ -53,27 +53,27 @@ Key Features:
 
 **DigiCert for Signing:**
 
-Recommendation by Security Team
+- Recommendation by Security Team
 
-1. Let’s Encrypt (DV only))
-2. Amazon Web Services (AWS) Certificate Manager (ACM) (not ACM Private CA) (DV only))
-3. Microsoft Azure integrated App Service Certificates provided by Starfield Technologies, LLC on top of GoDaddy (DV only))
-4. Google Trust Services (DV only)
-5. DigiCert (DV, OV, EV)
+  1. Let’s Encrypt (DV only))
+  2. Amazon Web Services (AWS) Certificate Manager (ACM) (not ACM Private CA) (DV only))
+  3. Microsoft Azure integrated App Service Certificates provided by Starfield Technologies, LLC on top of GoDaddy (DV only))
+  4. Google Trust Services (DV only)
+  5. DigiCert (DV, OV, EV)
 
 Domain Validated (DV): This is the lowest level of validation. The CA only verifies that the requestor has control over the domain name. This is usually done through email verification, DNS records, or file upload. DV certificates are quick and cheap to obtain, but they don't provide any organizational identity.
 
 - Organization Validation(OV) and Extended Validation(EV) Offered by DigiCert is a good option for us as it verifies organization identity.
 
-DigiCert-OV (Code Signing cert):
-- Code Signing - HSM
-   Use your own hardware security module (HSM)
-   $600.00/year subscription
+- DigiCert-OV (Code Signing cert):
+    Code Signing - HSM
+    Use your own hardware security module (HSM)
+    $600.00/year subscription
 
-DigiCert-EV (Code Signing cert)
-- Code Signing - HSM
-   Use your own hardware security module (HSM)
-   $840.00/year subscription
+- DigiCert-EV (Code Signing cert)
+    Code Signing - HSM
+    Use your own hardware security module (HSM)
+    $840.00/year subscription
 
 **Self-Signed Cert Creation:**
 
