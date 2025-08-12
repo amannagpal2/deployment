@@ -167,12 +167,12 @@ Sign using Self-Signed/Trusted CA Cert
    ```
    STORE_TYPE="ca"
    STORE_NAME="xyz"
-   notation cert add --type $STORE_TYPE --store $STORE_NAME $CERT_PATH
+   notation cert add --type $STORE_TYPE --store $STORE_NAME <cert-path>
    ``` 
 3. Configure trust policy before verification:
 
     Trust policies allow users to specify fine-tuned verification policies. 
-    ```json
+    ```yaml
     cat <<EOF > ./trustpolicy.json
     {
         "version": "1.0",
@@ -217,6 +217,79 @@ Sign using Self-Signed/Trusted CA Cert
 - Feature maturity, as it is new tool and still evolving so no all features of integrations are fully stable
   
 
-
 **Risks**
 - No warning on docker pull if root certs are not present
+
+
+### 4.1 Option 1 :  *Sigstore Cosign + Self-signed/Trusted CA Cert*
+
+Sigstore Cosign is an open-source command-line tool used for signing, verifying, and storing signatures of software artifacts—including container images—primarily in OCI (Open Container Initiative) registries.
+
+Key Features:
+
+- **Keyless signing:**  Allow user to sign images using OpenID Connect (OIDC) identities (e.g., from GitHub, Google, Microsoft), eliminating the need for long-lived private keys & certs.
+- **Support for Multiple Key Management Services (KMS):** Integrates with cloud KMS solutions (such as Azure Key Vault, AWS Signer, and others).
+- **Key-Pair Generation:** Can generate key-pair for signing and verification through the cosign cli using the pre-built commands.
+- **Support for multiple artifact types:** Cosign can sign containers, binaries, SBOMs (Software Bill of Materials), Kubernetes Helm charts etc.
+- **Kubernetes/OPA integration:** Cosign works with policy controllers and admission control systems to enforce signed artifacts for deployments in Kubernetes clusters.
+  
+#### 4.1.1 Installation and Setup
+
+
+
+**Cosign**
+
+- Download, extract and install Cosign CLI for linux
+  ```yaml
+  # binary
+  curl -O -L "https://github.com/sigstore/cosign/releases/latest/download/cosign-linux-amd64"
+  sudo mv cosign-linux-amd64 /usr/local/bin/cosign
+  sudo chmod +x /usr/local/bin/cosign
+  ```
+- Secure access permissions to ACR and AKV
+  - ACR user should have AcrPull and AcrPush roles enabled.
+  - For AKV, following permissions are required for an identity:
+
+    `Create` permissions for creating a certificate
+
+    `Get` permissions for reading existing certificates
+
+    `Sign` permissions for signing operations
+
+#### 4.1.2 Signing Image using Cosign CLI
+
+**Using Keyless-Signing**
+
+**Using Key-Pair**
+
+1. Authenticate to ACR/Artifactory
+    ``` 
+    cosign login <acr-name/arti-name> -u *** -p *** 
+    ```
+2. Image to sign (It is better to use the digest value to identify the image for signing since tags are mutable and can be overwritten).
+   ```
+   IMAGE=<REGISTRY-NAME>/<REPO-NAME>:<TAG>
+   IMAGE=<REGISTRY-NAME>/<REPO-NAME>@<DIGEST>
+   ```
+3. Generating key-pair for signing:
+   ```
+   cosign generate-key-pair --kms <some provider>://<some key>
+   For AKV: cosign generate-key-pair --kms azurekms://<vault-name>.vault.azure.net/<key-name>
+   ```
+   The following environment variables must be set to let cosign authenticate to Azure Key Vault.
+   - AZURE_TENANT_ID
+   - AZURE_CLIENT_ID
+   - AZURE_CLIENT_SECRET
+4. Sign the image:  
+   Using key-pair in KMS(Key Management system)
+   ```
+   cosign sign --keyazurekms://<vault-name>.vault.azure.net/<key-name> $IMAGE
+   ``` 
+
+#### 4.1.3 Verify a container image with Cosign
+
+Manual Verification Using KMS:  
+1. Use the verify command:
+   ```
+   cosign verify --keyazurekms://<vault-name>.vault.azure.net/<key-name> $IMAGE
+   ```
