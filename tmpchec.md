@@ -284,7 +284,9 @@ Key Features:
    Using key-pair in KMS(Key Management system)
    ```
    cosign sign --keyazurekms://<vault-name>.vault.azure.net/<key-name> $IMAGE
+   cosign sign --key <key-name> $IMAGE #using local key
    ``` 
+
 
 #### 4.1.3 Verify a container image with Cosign
 
