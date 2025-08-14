@@ -283,8 +283,8 @@ Key Features:
 4. Sign the image:  
    Using key-pair in KMS(Key Management system)
    ```
-   cosign sign --keyazurekms://<vault-name>.vault.azure.net/<key-name> $IMAGE
-   cosign sign --key <key-name> $IMAGE #using local key
+   cosign sign --keyazurekms://<vault-name>.vault.azure.net/<key-name> $IMAGE #using azure KV
+   cosign sign --key <key-name> $IMAGE                                        #using local key
    ``` 
 
 
