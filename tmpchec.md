@@ -55,9 +55,9 @@ Key Features:
 
 - Recommendation by Security Team
 
-  1. Let’s Encrypt (DV only))
-  2. Amazon Web Services (AWS) Certificate Manager (ACM) (not ACM Private CA) (DV only))
-  3. Microsoft Azure integrated App Service Certificates provided by Starfield Technologies, LLC on top of GoDaddy (DV only))
+  1. Let’s Encrypt (DV only)
+  2. Amazon Web Services (AWS) Certificate Manager (ACM) (not ACM Private CA) (DV only)
+  3. Microsoft Azure integrated App Service Certificates provided by Starfield Technologies, LLC on top of GoDaddy (DV only)
   4. Google Trust Services (DV only)
   5. DigiCert (DV, OV, EV)
 
@@ -202,6 +202,12 @@ Sign using Self-Signed/Trusted CA Cert
    notation verify $IMAGE
    '''
 
+#### 4.1.2 Signing and Verifying using GitHub Actions
+
+- Workflow steps to add in our CI/CD scripts to sign container image. ([Signing Workflow](https://github.com/notation-playground/notation-integration-with-ACR-and-AKV/blob/a6218d3bd1198d6d964a77734a17400b4deabeff/sign-template.yml#L59))  
+- Workflow steps to add in our CI/CD scripts to verify container image. ([Verifying Workflow](https://github.com/notation-playground/notation-integration-with-ACR-and-AKV/blob/template/verify-template.yml))  
+
+
 #### 4.1.4 Pros and Cons
 
 **Pros**
@@ -217,11 +223,11 @@ Sign using Self-Signed/Trusted CA Cert
 - Feature maturity, as it is new tool and still evolving so no all features of integrations are fully stable
   
 
+
 **Risks**
 - No warning on docker pull if root certs are not present
 
-
-### 4.1 Option 1 :  *Sigstore Cosign + Self-signed/Trusted CA Cert*
+### 4.2 Option 2 :  *ChainGuard Cosign + Self-signed/Trusted CA Cert*
 
 Sigstore Cosign is an open-source command-line tool used for signing, verifying, and storing signatures of software artifacts—including container images—primarily in OCI (Open Container Initiative) registries.
 
@@ -233,7 +239,7 @@ Key Features:
 - **Support for multiple artifact types:** Cosign can sign containers, binaries, SBOMs (Software Bill of Materials), Kubernetes Helm charts etc.
 - **Kubernetes/OPA integration:** Cosign works with policy controllers and admission control systems to enforce signed artifacts for deployments in Kubernetes clusters.
   
-#### 4.1.1 Installation and Setup
+#### 4.2.1 Installation and Setup
 
 
 
@@ -256,11 +262,17 @@ Key Features:
 
     `Sign` permissions for signing operations
 
-#### 4.1.2 Signing Image using Cosign CLI
+#### 4.2.2 Signing Image using Cosign CLI
 
-**Using Keyless-Signing**
+**Using Keyless-Signing**  
 
-**Using Key-Pair**
+Keyless Signing using GitHub Actions ([CI/CD Signing](https://edu.chainguard.dev/open-source/sigstore/how-to-keyless-sign-a-container-with-sigstore/))
+
+Keyless signing of container images using Cosign allows you to sign images without managing long-lived private keys. Instead, Cosign generates ephemeral keys (lasting only minutes) during the signing process, issues a certificate for the public key via Sigstore's Fulcio CA using your OIDC identity (from providers like GitHub, Google, Microsoft), and logs the certificate in a transparency log.
+
+1. 
+
+**Using Key-Pair:**
 
 1. Authenticate to ACR/Artifactory
     ``` 
@@ -273,7 +285,8 @@ Key Features:
    ```
 3. Generating key-pair for signing:
    ```
-   cosign generate-key-pair --kms <some provider>://<some key>
+   cosign generate-key-pair --kms <some provider>://<some key> #in azure KV
+   cosign generate-key-pair #local key generation
    For AKV: cosign generate-key-pair --kms azurekms://<vault-name>.vault.azure.net/<key-name>
    ```
    The following environment variables must be set to let cosign authenticate to Azure Key Vault.
@@ -283,15 +296,59 @@ Key Features:
 4. Sign the image:  
    Using key-pair in KMS(Key Management system)
    ```
-   cosign sign --keyazurekms://<vault-name>.vault.azure.net/<key-name> $IMAGE #using azure KV
-   cosign sign --key <key-name> $IMAGE                                        #using local key
+   cosign sign --keyazurekms://<vault-name>.vault.azure.net/<key-name> $IMAGE   #using azure KV
+   cosign sign --key <private-key-name> $IMAGE   #using local private key
    ``` 
 
-
-#### 4.1.3 Verify a container image with Cosign
+#### 4.2.3 Verify a container image with Cosign
 
 Manual Verification Using KMS:  
+
 1. Use the verify command:
    ```
-   cosign verify --keyazurekms://<vault-name>.vault.azure.net/<key-name> $IMAGE
+   cosign verify --keyazurekms://<vault-name>.vault.azure.net/<key-name> $IMAGE      #using azure KV
+   cosign verify --key <public-key-name> $IMAGE      #using local public key
    ```
+
+
+
+
+
+#### 4.2.4 Pros and Cons
+
+**Pros**
+
+- Keyless Signing and Simplified Key Management.
+- Transparency and Auditability, all signatures and certificates are recorded in the Rekor transparency log.
+- Integration and Ecosystem Support, cosign is widely integrated into CI/CD workflows, supports most container registries.
+- Easy integration for container registries(docker hub, ACR, AWS ECR)
+- Flexibility in certificate management(AWS KMS, Azure Kv)
+-  Azure supported Plugins for verification in AKS while deployment
+
+**Cons**
+
+- Online Dependency and Service Availability: Keyless workflows require real-time access to Sigstore services (Fulcio and Rekor) during signing/verification. 
+- Learning curve, requires understanding of cryptographic keys, certs and OCI artifacts.
+- If dealing with local key pair, first need to import it into cosign supported format. 
+
+
+**Risks**
+- No warning on docker pull if root certs are not present
+
+
+## 5. Decision Outcome
+
+### 5.1 Chosen Approach: Option 2 (**)
+
+
+
+### 5.2 Decision Makers
+
+- 
+- Dilip Balaraju (MS/EFW1)
+
+### 5.3 Reference
+
+- [Notation]()
+- [Keycloak](https://www.infracloud.io/blogs/request-level-authentication-authorization-istio-keycloak/)
+- [MS-Entraid](https://pages.github.boschdevcloud.com/ManagedRuntime/documentation-customer/docs/30_onboarding_and_getting_started/20_getting_started_guides/20_guides/02_authentication-and-security/#_istio_idm_integration)
