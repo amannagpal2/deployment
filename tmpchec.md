@@ -349,6 +349,4 @@ Manual Verification Using KMS:
 
 ### 5.3 Reference
 
-- [Notation]()
-- [Keycloak](https://www.infracloud.io/blogs/request-level-authentication-authorization-istio-keycloak/)
-- [MS-Entraid](https://pages.github.boschdevcloud.com/ManagedRuntime/documentation-customer/docs/30_onboarding_and_getting_started/20_getting_started_guides/20_guides/02_authentication-and-security/#_istio_idm_integration)
+- [Notation](https://notaryproject.dev/docs/)
