@@ -349,4 +349,11 @@ Manual Verification Using KMS:
 
 ### 5.3 Reference
 
+
+- Install & verify the Notation Azure Key Vault plugin on linux
+  ```
+  notation plugin install --url https://github.com/Azure/notation-azure-kv/releases/download/v1.2.1/notation-azure-kv_1.2.1_linux_amd64.tar.gz --sha256sum 67c5ccaaf28dd44d2b6572684d84e344a02c2258af1d65ead3910b3156d3eaf5
+  notation plugin ls
+  ```
+
 - [Notation](https://notaryproject.dev/docs/)
